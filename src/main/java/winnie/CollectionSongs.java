@@ -1,9 +1,9 @@
 package winnie;
 
 import org.json.simple.parser.ParseException;
-import winnie.commands.JsonObject;
-import winnie.plot.Song;
 import winnie.plot.Mood;
+import winnie.plot.Song;
+import winnie.util.JsonObject;
 
 import java.io.*;
 import java.util.ArrayDeque;
@@ -19,17 +19,24 @@ public class CollectionSongs {
     private Date date;
     private String file;
     private JsonObject jsOb;
+    private PrintStream out;
 
     public CollectionSongs() {
         songs = new ArrayDeque<>();
         date = new Date();
         file = null;
         jsOb = new JsonObject();
+        out = System.out;
+    }
+
+    public void setOut(PrintStream out) {
+        System.out.println(out);
+        this.out = out;
     }
 
     public void addElement(String str) throws ParseException, NullPointerException {
-        if (ifNull(str)) {
-            System.out.println("Необходимо ввести элемент в формате json");
+        if (isEmpty(str)) {
+            out.println("Необходимо ввести элемент в формате json");
         } else {
 //            Song song1 = jsOb.getJson(str);
 //            if(song1.equals(null)){
@@ -39,14 +46,15 @@ public class CollectionSongs {
 //            }
             try {
                 songs.add(jsOb.getJson(str));
-            }catch (NullPointerException ex){
-                System.out.println("Ошибка ввода");
+            } catch (NullPointerException ex) {
+                out.println("Ошибка ввода");
             }
         }
     }
 
+
     public void showCollection() {
-        songs.forEach(song -> System.out.println(song.toString()));
+        songs.forEach(song -> out.println(song.toString()));
     }
 
     public void clearCollectrion() {
@@ -54,12 +62,12 @@ public class CollectionSongs {
     }
 
     public void info() {
-        System.out.println("дата инициализации: " + date + "; тип: Song; количество элементов: " + songs.size());
+        out.println("дата инициализации: " + date + "; тип: Song; количество элементов: " + songs.size());
     }
 
     public void inputFile(String filePath) {
 
-        if (ifNull(filePath)) {
+        if (isEmpty(filePath)) {
             filePath = "resources/defaultInput.csv";
         }
         file = filePath;
@@ -90,8 +98,8 @@ public class CollectionSongs {
             getCSV(string);
             this.showCollection();
         } catch (FileNotFoundException ex) {
-            System.out.println("File not found");
-        }catch (IOException e) {
+            out.println("File not found");
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -119,8 +127,8 @@ public class CollectionSongs {
     }
 
     public void removeElement(String id) {
-        if (ifNull(id)) {
-            System.out.println("Необходимо ввести id элемента");
+        if (isEmpty(id)) {
+            out.println("Необходимо ввести id элемента");
         } else {
             songs.forEach(song -> {
                 if (song.getId() == Integer.parseInt(id)) {
@@ -132,14 +140,14 @@ public class CollectionSongs {
 
     public void removeLower(String s) {
 
-        if (ifNull(s)) {
-            System.out.println("Необходимо ввсести элемент");
+        if (isEmpty(s)) {
+            out.println("Необходимо ввсести элемент");
         } else {
             songs.forEach(song -> {
                 if (song.getId() == Integer.parseInt(s)) {
                     songs.forEach(sg -> {
                         if (sg.compareTo(song) < 0) {
-                            if(song.getId() != sg.getId()) songs.remove(sg);
+                            if (song.getId() != sg.getId()) songs.remove(sg);
                         }
                     });
                     return;
@@ -148,38 +156,40 @@ public class CollectionSongs {
         }
     }
 
-     private String toCSV() {
+    private String toCSV() {
         StringBuilder builder = new StringBuilder();
         songs.forEach(song -> builder.append(song.toCSV()));
         return builder.toString();
     }
 
 
-    private boolean ifNull(String text) {
+    private boolean isEmpty(String text) {
         return text.equals("");
     }
-    public String getText(){
+
+    public String getText() {
 
         Random random = new Random();
         int index = random.nextInt(songs.size());
         String text = null;
         for (Song song : songs) {
             int i = 0;
-            if(index == i){
+            if (index == i) {
                 text = song.getText();
             }
             i++;
         }
 
-       return text;
+        return text;
     }
-    private void getCSV(String str){
+
+    private void getCSV(String str) {
         songs.clear();
         Arrays.asList(str.split("\n")).forEach(s -> {
-            String [] splited = s.split(",");
+            String[] splited = s.split(",");
             String md = splited[0];
             String text = splited[1];
-            songs.add(new Song(Mood.getMoodByString(md),text));
+            songs.add(new Song(Mood.getMoodByString(md), text));
         });
     }
 

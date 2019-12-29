@@ -1,14 +1,21 @@
 package winnie.plot;
 
+import java.io.PrintStream;
+
 public class Walk implements Randomasable {
     private walkWeather walkW;
     private int time;
     private Iteration iteration;
+    private PrintStream out;
 
+    /**
+     *
+     */
     public Walk() {
         walkW = new walkWeather();
         time = getRand(70);
         iteration = new Iteration();
+        this.out = System.out;
     }
 
     /**
@@ -28,7 +35,7 @@ public class Walk implements Randomasable {
         void changeTemperature() { temperature = -(getRand(20)); }
         void printTemperature() {
             walkW.changeTemperature();
-            System.out.println("На улице:" + walkW.getTemperature());
+            out.println("На улице:" + walkW.getTemperature());
         }
     }
 
@@ -52,31 +59,31 @@ public class Walk implements Randomasable {
      */
     public void talk(Winnie W, Piglet P) {
         Character[] person = {W, P};
-        System.out.println(W.getName() + " и " + P.getName() + " сидят дома");
-        System.out.println("На улице " + walkW.weather.getText() + ", температура:  " + walkW.getTemperature());
+        out.println(W.getName() + " и " + P.getName() + " сидят дома");
+        out.println("На улице " + walkW.weather.getText() + ", температура:  " + walkW.getTemperature());
         Iteration firsIteration = new Iteration() {
             @Override
             public void changeOfCharacteristics(Character[] person) {
-                System.out.println("--------------------------------------------");
-                System.out.println("Characteristic:");
+                out.println("--------------------------------------------");
+                out.println("Characteristic:");
                 for (Character i : person) {
                     i.weatherMood(walkW.getWeather());
                     i.talkMood(i);
                     i.talkStatus(i);
                 }
-                System.out.println("============================================");
+                out.println("============================================");
             }
         };
         firsIteration.changeOfCharacteristics(person);
         if (((W.getMood() == Mood.SAD) && (W.getMood() == P.getMood())) || (walkW.getTemperature() < -18))
-            System.out.println("Обоим не нравится погода, они решили остаться дома и есть плюшки");
+            out.println("Обоим не нравится погода, они решили остаться дома и есть плюшки");
         else {
-            System.out.println(W.getName() + " и " + P.getName() + "пошли гулять");
-            System.out.println("Они шли " + time + " минут");
+            out.println(W.getName() + " и " + P.getName() + "пошли гулять");
+            out.println("Они шли " + time + " минут");
             walkW.printTemperature();
             iteration.changeOfCharacteristics(person, time, false);
             if (!validate(person)) {
-                System.out.println(W.getName() + ": пора идти домой");
+                out.println(W.getName() + ": пора идти домой");
                 return;
             }
             while (W.getStatus() > 20) {
@@ -88,12 +95,16 @@ public class Walk implements Randomasable {
                     iteration.changeOfCharacteristics(person, 20, true);
                 }
                 if (!validate(person)) {
-                    System.out.println(W.getName() + ": пора идти домой");
+                    out.println(W.getName() + ": пора идти домой");
                     return;
                 }
             }
             P.support(W);
         }
+    }
+
+    public void setOut(PrintStream out) {
+        this.out = out;
     }
 
     @Override

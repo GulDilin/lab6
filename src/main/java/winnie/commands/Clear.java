@@ -5,9 +5,10 @@ import winnie.CollectionSongs;
 /**
  * Очитка коллекции
  */
-public class Clear implements Command {
+public class Clear extends AbstractCommand  {
     @Override
     public void execute(CollectionSongs songs) {
+        songs.setOut(this.getOut());
         songs.clearCollectrion();
     }
 }
