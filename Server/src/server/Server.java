@@ -1,8 +1,7 @@
 package server;
 
 
-import winnie.CollectionSongs;
-import winnie.util.CommandParser;
+import server.util.CommandParser;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -17,15 +16,14 @@ public class Server {
     private CollectionSongs songs;
     final String[] SET_VALUES;
     private CommandParser parser;
-//    private DataBaseManager dataBaseManager;
-//    private WindowsArrayList windows = new WindowsArrayList(new CopyOnWriteArrayList<Window>());
+    private DataBaseManager dataBaseManager;
 
     public Server(int port) throws IOException, SQLException {
         this.host = InetAddress.getLocalHost();
         this.channel = DatagramChannel.open().bind(new InetSocketAddress(host, port));
-
-        songs = new CollectionSongs();
-        songs.inputFile("");
+        dataBaseManager = new DataBaseManager("mydb", 5433);
+        songs = new CollectionSongs(dataBaseManager);
+//        songs.inputFile("");
         SET_VALUES = new String[]{"save", "import", "info", "add", "load",
                 "help", "show", "remove", "remove_lower", "start", "exit", "clear", "test"};
         parser = new CommandParser(SET_VALUES);
@@ -34,7 +32,6 @@ public class Server {
         System.out.println("IP: " + host);
         System.out.println("port: " + port);
         //this.windows.importFromFile("default.json");
-//        dataBaseManager = new DataBaseManager();
 //        windows = dataBaseManager.getWindows();
     }
 

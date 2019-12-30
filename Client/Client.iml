@@ -8,5 +8,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="lab6" />
+    <orderEntry type="module" module-name="Server" />
+    <orderEntry type="library" name="Maven: javax.mail:javax.mail-api:1.6.2" level="project" />
+    <orderEntry type="library" name="javamail1_4_5" level="project" />
+    <orderEntry type="library" name="demo" level="project" />
   </component>
 </module>

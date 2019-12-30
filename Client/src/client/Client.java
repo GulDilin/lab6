@@ -1,7 +1,11 @@
 package client;
 
+import server.DataBaseManager;
+
+import javax.mail.internet.AddressException;
 import java.io.*;
 import java.net.*;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Client {
@@ -11,6 +15,9 @@ public class Client {
     private int port;
     private String defaultFilename;
     private boolean isWorking;
+    private String login = "";
+    private String password = "";
+    private int userId;
 //    private HashSet<String> user_logins = new HashSet<>();
 //    private DataBaseManager dataBaseManager;
 //    private Tunnel tunnel;
@@ -22,6 +29,77 @@ public class Client {
         this.port = port;
         udpSocket = new DatagramSocket();
 
+    }
+
+    private void logIn() {
+        boolean isLogin = false;
+        System.out.print("Please autorizate in________" +
+                "\n\tRegister | new user" +
+                "\n\tSing In" +
+                "\nType command: ");
+        Scanner in = new Scanner(System.in);
+        String s = in.nextLine().toLowerCase();
+        System.out.println(s);
+        DataBaseManager dataBaseManager = null;
+        try {
+            dataBaseManager = new DataBaseManager("mydb", 5433);
+        } catch (SQLException e){
+            System.out.println("Cant load user list");
+            System.exit(1);
+        }
+        while (!isLogin) {
+
+            while (!(s.equals("register")) && (!s.equals("sing in"))) {
+                if (!s.equals(" "))
+                    System.out.println("No such command");
+                System.out.println("Type command: ");
+                s = in.nextLine().trim();
+            }
+            switch (s) {
+                case "register":
+                    s = " ";
+                    System.out.println("\tType Login : ");
+                    login = in.nextLine().toLowerCase().trim();
+
+                    System.out.println("\tType EMAIL : ");
+                    String email = in.nextLine().trim();
+                    password = DataBaseManager.getRandomPassword(4);
+                    System.out.println("Your password: " + password);
+                    try{
+                        EmailManager.sendEmail(email, "Registration", EmailManager.getPassMessage(login, password));
+                    } catch (AddressException e){
+                        System.err.println("Unable to send mail. Wrong address");
+                    }
+                    if (dataBaseManager.registerUser(login, email, password)) {
+                        System.out.println("Successful registration");
+                        System.out.println("Your password: " + password);
+                        isLogin = true;
+                        userId = dataBaseManager.getUserID(login);
+                    } else {
+                        System.out.println("Registration failed. User already exist");
+                    }
+                    break;
+
+                case "sing in":
+                    s = " ";
+                    System.out.print("\tType login: ");
+                    login = in.nextLine().trim();
+                    if (!dataBaseManager.getUserLogins().contains(login)) {
+                        System.out.print("Wrong login\n");
+                        break;
+                    }
+                    System.out.print("\tType password : ");
+                    password = in.nextLine().trim();
+                    if (dataBaseManager.checkPass(login, password)) {
+                        System.out.println("Sing In success");
+                        isLogin = true;
+                        userId = dataBaseManager.getUserID(login);
+                    } else {
+                        System.out.println("Wrong password");
+                    }
+                    break;
+            }
+        }
     }
 
     private DatagramPacket createDatagramPacket(CommandHolder command) throws IOException {
@@ -116,6 +194,9 @@ public class Client {
                 args = "";
             }
             CommandHolder command = new CommandHolder(commandName, args);
+            command.setUser(login);
+            command.setUserId(userId);
+            command.setPassword_hash(password);
             try {
                 DatagramPacket o = createDatagramPacket(command);
                 String response = getServerResponse(o);
@@ -136,7 +217,7 @@ public class Client {
 
 
         sender.testServerConnection();
-
+        sender.logIn();
         sender.work();
     }
 }

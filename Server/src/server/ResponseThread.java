@@ -1,10 +1,9 @@
 package server;
 
 import client.CommandHolder;
-import winnie.CollectionSongs;
-import winnie.commands.Command;
-import winnie.util.CommandParser;
-import winnie.util.NoSuchCommandException;
+import server.commands.Command;
+import server.util.CommandParser;
+import server.util.NoSuchCommandException;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -63,8 +62,9 @@ public class ResponseThread extends Thread {
 
             try {
                 command = parser.parse(commandHolder.getCommandName(), commandHolder.getArgs());
-                command.setOut(printStream);
                 if (command != null) {
+                    command.setOut(printStream);
+                    command.setUserId(commandHolder.getUserId());
                     command.execute(songs);
                 }
             } catch (NoSuchCommandException ex) {
