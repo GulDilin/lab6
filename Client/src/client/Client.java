@@ -20,14 +20,6 @@ public class Client {
 //        dataBaseManager = new DataBaseManager();
         this.serverAdress = InetAddress.getByName(serverAdress);
         this.port = port;
-//        tunnel = new Tunnel("helios.se.ifmo.ru",
-//                "s264449",
-//                "cfv571",
-//                2222,
-//                "localhost",
-//                port,
-//                port);
-////        tunnel.connect();
         udpSocket = new DatagramSocket();
 
     }
@@ -113,7 +105,17 @@ public class Client {
         while (isWork) {
             System.out.print("Введите команду: ");
             str = in.nextLine();
-            CommandHolder command = new CommandHolder(str);
+            String[] s = str.split(" ", 2);
+
+            String commandName = s[0];
+            String args = "";
+
+            try {
+                args = s[1];
+            } catch (ArrayIndexOutOfBoundsException e) {
+                args = "";
+            }
+            CommandHolder command = new CommandHolder(commandName, args);
             try {
                 DatagramPacket o = createDatagramPacket(command);
                 String response = getServerResponse(o);
@@ -136,28 +138,5 @@ public class Client {
         sender.testServerConnection();
 
         sender.work();
-//        while (isWork) {
-//            System.out.print("Введите команду: ");
-//            str = in.nextLine();
-//
-//            SocketAddress a = new InetSocketAddress("127.0.0.1", PORT);
-//            DatagramSocket s = new DatagramSocket(a);
-//
-//            b = str.getBytes();
-//            CommandHolder command = new CommandHolder(str);
-//            DatagramPacket o = ;
-//            System.out.println(o);
-////        System.out.println("before send");
-//
-//            s.send(o);
-//            System.out.println("send");
-//
-//            DatagramPacket i = new DatagramPacket(b, b.length);
-//            s.receive(i);
-//            System.out.println("receive");
-//
-//            String response = new String(b);
-//            System.out.println(response);
-//        }
     }
 }

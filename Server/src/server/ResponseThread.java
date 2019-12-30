@@ -71,16 +71,9 @@ public class ResponseThread extends Thread {
                 printStream.println(ex.getMessage());
             }
 
-//            if (commandHolder.getCommandName().equals("test")) {
-//                printStream.println("Connected");
-//            } else {
-//                printStream.println(commandHolder.toString());
-//            }
             printStream.println();
 
             response = bao.toString().trim();
-//            System.out.println(response);
-//            command.toString();
             oos.writeObject(response);
             oos.flush();
 

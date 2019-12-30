@@ -23,14 +23,16 @@ public class Server {
     public Server(int port) throws IOException, SQLException {
         this.host = InetAddress.getLocalHost();
         this.channel = DatagramChannel.open().bind(new InetSocketAddress(host, port));
-        System.out.println("Server started");
-        System.out.println("IP: " + host);
-        System.out.println("port: " + port);
+
         songs = new CollectionSongs();
         songs.inputFile("");
         SET_VALUES = new String[]{"save", "import", "info", "add", "load",
                 "help", "show", "remove", "remove_lower", "start", "exit", "clear", "test"};
         parser = new CommandParser(SET_VALUES);
+
+        System.out.println("Server started");
+        System.out.println("IP: " + host);
+        System.out.println("port: " + port);
         //this.windows.importFromFile("default.json");
 //        dataBaseManager = new DataBaseManager();
 //        windows = dataBaseManager.getWindows();

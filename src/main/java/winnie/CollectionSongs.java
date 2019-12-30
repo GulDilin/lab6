@@ -10,19 +10,20 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Коллекция песен Винни
  */
 public class CollectionSongs {
-    private ArrayDeque<Song> songs;
+    private ArrayBlockingQueue<Song> songs;
     private Date date;
     private String file;
     private JsonObject jsOb;
     private PrintStream out;
 
     public CollectionSongs() {
-        songs = new ArrayDeque<>();
+        songs = new ArrayBlockingQueue<Song>(10);
         date = new Date();
         file = null;
         jsOb = new JsonObject();
@@ -32,6 +33,10 @@ public class CollectionSongs {
     public void setOut(PrintStream out) {
         System.out.println(out);
         this.out = out;
+    }
+
+    public void addElement(Song song) throws NullPointerException{
+        songs.add(song);
     }
 
     public void addElement(String str) throws ParseException, NullPointerException {

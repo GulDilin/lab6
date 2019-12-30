@@ -6,6 +6,7 @@ import java.util.Arrays;
 public class Song implements Randomasable, Comparable {
     private static int nextId = 1;
     private int id;
+    private int ownerId;
     private Mood mood;
     private String text;
     private ArrayList<String> words = new ArrayList<>(Arrays.asList("кашка",
@@ -15,8 +16,29 @@ public class Song implements Randomasable, Comparable {
     public Song(Mood md, String text) {
         mood = md;
         id = nextId;
-        nextId ++;
+        nextId++;
         this.text = text;
+        this.ownerId = 0;
+    }
+
+    public Song(Mood md, String text, int ownerId) {
+        mood = md;
+        id = nextId;
+        nextId++;
+        this.text = text;
+        this.ownerId = ownerId;
+    }
+
+    public Song(String mood, String text) {
+        this(Mood.getMoodByString(mood), text);
+    }
+
+    public void setOwnerId(int ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public int getOwnerId() {
+        return ownerId;
     }
 
     public void setText(String text) {
@@ -34,17 +56,18 @@ public class Song implements Randomasable, Comparable {
     public Mood getMood() {
         return mood;
     }
-    int getCoutnWords(){
+
+    int getCoutnWords() {
         //Начальное количество слов равно 0
         int count = 0;
         String text = this.getText();
 
         //Если ввели хотя бы одно слово, тогда считать, иначе конец программы
-        if(this.getText().length() != 0){
+        if (this.getText().length() != 0) {
             count++;
             //Проверяем каждый символ, не пробел ли это
             for (int i = 0; i < text.length(); i++) {
-                if(text.charAt(i) == ' '){
+                if (text.charAt(i) == ' ') {
                     //Если пробел - увеличиваем количество слов на 1
                     count++;
                 }
@@ -70,25 +93,25 @@ public class Song implements Randomasable, Comparable {
 
     @Override
     public String toString() {
-        return  "id: " +id+" mood: " + mood  + " song:" + text;
+        return "id: " + id + " owner_id:" + ownerId + " mood: " + mood + " song:" + text;
     }
 
-    public String toCSV(){
-        return getMood() + "," + getText() +"\n";
+    public String toCSV() {
+        return getMood() + "," + getText() + "\n";
     }
+
     @Override
     public int compareTo(Object obj) {
-        if (equals(obj)){
+        if (equals(obj)) {
             Song song = (Song) obj;
-            if(this.getCoutnWords() > song.getCoutnWords()){
+            if (this.getCoutnWords() > song.getCoutnWords()) {
                 return 1;
-            }else {
-                if (this.getCoutnWords() == song.getCoutnWords()){
+            } else {
+                if (this.getCoutnWords() == song.getCoutnWords()) {
                     return 0;
-                }
-                else return -1;
+                } else return -1;
             }
-        }else {
+        } else {
             return -1;
         }
     }

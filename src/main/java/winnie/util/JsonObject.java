@@ -6,7 +6,7 @@ import org.json.simple.parser.ParseException;
 import winnie.plot.*;
 
 public class JsonObject {
-    public Song getJson(String elem) throws ParseException,NullPointerException {
+    public Song getJson(String elem) throws NullPointerException {
         Song song;
         Mood mood = null;
         String md;
@@ -17,6 +17,7 @@ public class JsonObject {
         try{
             jsonOb = (JSONObject) parser.parse(elem);
             md = (String)jsonOb.get("mood");
+            md = md.toUpperCase();
             text = (String) jsonOb.get("text");
             if (text.equals(null) || md.equals(null)){
                 throw new NullPointerException();

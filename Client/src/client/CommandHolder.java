@@ -6,14 +6,19 @@ public class CommandHolder implements Serializable {
     private String commandName;
     private String args;
 
-    CommandHolder(){
+    public CommandHolder(){
         commandName = "";
         args = "";
     }
 
-    CommandHolder(String s){
+    public CommandHolder(String s){
         commandName = s;
         args = "";
+    }
+
+    public CommandHolder(String n, String a){
+        commandName = n;
+        args = a;
     }
 
     public String getCommandName() {
