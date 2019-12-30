@@ -31,7 +31,7 @@ public class CollectionSongs {
 
     }
 
-    public CollectionSongs(ArrayQueue<Song> songs){
+    public CollectionSongs(ArrayQueue<Song> songs) {
         this.songs = songs;
         date = new Date();
         file = null;
@@ -56,12 +56,12 @@ public class CollectionSongs {
         } else {
             try {
                 Song song = jsonConverter.getFromJson(str);
-                songs.add(song);
                 manager.addSong(song, ownerId);
             } catch (NullPointerException ex) {
                 out.println("Ошибка ввода");
             }
         }
+        songs = manager.getSongs();
     }
 
 
@@ -134,35 +134,25 @@ public class CollectionSongs {
         }
     }
 
-    public void save(int ownerId){
+    public void save(int ownerId) {
         songs.forEach(song -> manager.addSong(song, ownerId));
     }
 
     public void load() {
-        inputFile(file);
+        songs = manager.getSongs();
     }
 
-    public void removeElement(String id) {
-        if (isEmpty(id)) {
-            out.println("Необходимо ввести id элемента");
-        } else {
-            int idToRemove = -1;
-            try {
-                idToRemove = Integer.parseInt(id);
-            } catch (NumberFormatException e){
-                out.println("Неверный id элемента");
-                return;
+    public void removeElement(int id, int userId, String passwordHash) {
+        songs.forEach(song -> {
+            if (song.getId() == id) {
+                manager.deleteById(id, userId, passwordHash);
             }
-            int finalIdToRemove = idToRemove;
-            songs.forEach(song -> {
-                if (song.getId() == finalIdToRemove) {
-                    songs.remove(song);
-                }
-            });
-        }
+        });
+        songs = manager.getSongs();
+
     }
 
-    public void removeLower(String id) {
+    public void removeLower(String id, int ownerId, String hash) {
 
         if (isEmpty(id)) {
             out.println("Необходимо ввсести id элемента");
@@ -170,7 +160,7 @@ public class CollectionSongs {
             int idToRemove = -1;
             try {
                 idToRemove = Integer.parseInt(id);
-            } catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 out.println("Неверный id элемента");
                 return;
             }
@@ -179,13 +169,14 @@ public class CollectionSongs {
                 if (song.getId() == finalIdToRemove) {
                     songs.forEach(sg -> {
                         if (sg.compareTo(song) < 0) {
-                            if (song.getId() != sg.getId()) songs.remove(sg);
+                            if (song.getId() != sg.getId()) manager.deleteSong(sg, ownerId, hash);
                         }
                     });
                     return;
                 }
             });
         }
+        songs = manager.getSongs();
     }
 
     private String toCSV() {

@@ -6,13 +6,18 @@ import server.CollectionSongs;
  * удаляет элемент из коллекции по его значению
  */
 public class RemoveElement extends AbstractCommand {
-    private String id;
-    public RemoveElement(String id){
-        this.id = id;
+    private int id;
+    public RemoveElement(String arg){
+        try {
+            id = Integer.parseInt(arg);
+        } catch (NumberFormatException e){
+            id = 0;
+        }
     }
+
     @Override
     public void execute(CollectionSongs songs) {
         songs.setOut(this.getOut());
-        songs.removeElement(id);
+        songs.removeElement(id, getUserId(), getPasswordHash());
     }
 }

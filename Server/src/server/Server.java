@@ -23,7 +23,6 @@ public class Server {
         this.channel = DatagramChannel.open().bind(new InetSocketAddress(host, port));
         dataBaseManager = new DataBaseManager("mydb", 5433);
         songs = new CollectionSongs(dataBaseManager);
-//        songs.inputFile("");
         SET_VALUES = new String[]{"save", "import", "info", "add", "load",
                 "help", "show", "remove", "remove_lower", "start", "exit", "clear", "test"};
         parser = new CommandParser(SET_VALUES);
@@ -31,8 +30,6 @@ public class Server {
         System.out.println("Server started");
         System.out.println("IP: " + host);
         System.out.println("port: " + port);
-        //this.windows.importFromFile("default.json");
-//        windows = dataBaseManager.getWindows();
     }
 
     private void listen() throws IOException {

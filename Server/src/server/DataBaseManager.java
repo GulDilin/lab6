@@ -42,6 +42,7 @@ public class DataBaseManager {
                 this.stmt = connection.createStatement();
                 System.out.println("Database connected!");
             } catch (NullPointerException ex) {
+
                 System.out.println("Database connection error");
                 exit(1);
 
@@ -86,7 +87,6 @@ public class DataBaseManager {
      */
     public ArrayQueue<Song> getSongs() {
         ArrayQueue<Song> songs = new ArrayQueue<Song>(10);
-//        CollectionSongs songs = new CollectionSongs(null);
         try {
 
             ResultSet rs = stmt.executeQuery("SELECT * FROM songs");
@@ -112,18 +112,21 @@ public class DataBaseManager {
      * @return
      */
     public boolean checkUser(String hash, int userID) {
+        System.out.println();
+        System.out.println(hash);
+        System.out.println(userID);
         try {
             ResultSet rs = stmt.executeQuery("SELECT * FROM users");
             while (rs.next()) {
-                if (Integer.valueOf(rs.getInt("ownerId")).equals(userID)) {
-                    if (hash.equals(getMD5(rs.getString("login"))
-                            + rs.getString("password")))
+                if (Integer.valueOf(rs.getInt("user_id")).equals(userID)) {
+                    if (hash.equals(rs.getString("password")))
                         return true;
                 }
             }
         } catch (SQLException ex) {
+            ex.printStackTrace();
             System.out.println("Database connection error");
-            exit(1);
+//            exit(1);
             return false;
         }
         return false;
@@ -170,7 +173,7 @@ public class DataBaseManager {
         String text = "";
 //        Song removableSong = new Song(mood, text, );
         System.out.println("Try to remove " + song.toString());
-        String deleteQuery = "DELETE FROM collection" +
+        String deleteQuery = "DELETE FROM songs" +
                 " WHERE mood LIKE \'" + song.getMood() + "\'"
                 + " AND  text LIKE \'" + song.getText() + "\';";
         out.println(deleteQuery);
@@ -185,13 +188,14 @@ public class DataBaseManager {
         }
     }
 
+
     public boolean deleteByOwnerId(int id, String hash) {
         if (!checkUser(hash, id)) {
             this.out.println("Wrong user and password");
             return false;
         }
-        String deleteQuery = "DELETE FROM collection" +
-                " WHERE id =" + id + ";";
+        String deleteQuery = "DELETE FROM songs" +
+                " WHERE owner_id =" + id + ";";
         out.println(deleteQuery);
         try {
             stmt.execute(deleteQuery);
@@ -204,6 +208,24 @@ public class DataBaseManager {
         }
     }
 
+    public boolean deleteById(int id, int ownerId, String hash) {
+        if (!checkUser(hash, ownerId)) {
+            this.out.println("Wrong user and password");
+            return false;
+        }
+        String deleteQuery = "DELETE FROM songs" +
+                " WHERE id =" + id + ";";
+        out.println(deleteQuery);
+        try {
+            stmt.execute(deleteQuery);
+            System.out.println("Database remove success");
+            return true;
+        } catch (SQLException ex) {
+            System.err.println("Database delete failed");
+            ex.printStackTrace();
+            return false;
+        }
+    }
     /**
      * @param song
      * @param Id

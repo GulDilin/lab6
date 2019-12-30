@@ -65,6 +65,7 @@ public class ResponseThread extends Thread {
                 if (command != null) {
                     command.setOut(printStream);
                     command.setUserId(commandHolder.getUserId());
+                    command.setPasswordHash(commandHolder.getPassword_hash());
                     command.execute(songs);
                 }
             } catch (NoSuchCommandException ex) {

@@ -11,4 +11,5 @@ public interface Command {
     void setOut(PrintStream out);
     void setUserId(int userId);
     void setDataBaseManager(DataBaseManager manager);
+    void setPasswordHash(String s);
 }

@@ -65,6 +65,7 @@ public class Client {
                     String email = in.nextLine().trim();
                     password = DataBaseManager.getRandomPassword(4);
                     System.out.println("Your password: " + password);
+                    password = DataBaseManager.getMD5(password);
                     try{
                         EmailManager.sendEmail(email, "Registration", EmailManager.getPassMessage(login, password));
                     } catch (AddressException e){
@@ -94,6 +95,7 @@ public class Client {
                         System.out.println("Sing In success");
                         isLogin = true;
                         userId = dataBaseManager.getUserID(login);
+                        password = DataBaseManager.getMD5(password);
                     } else {
                         System.out.println("Wrong password");
                     }
