@@ -10,21 +10,17 @@ import java.util.Scanner;
 
 public class Client {
     private static final int PORT = 1234;
-    private DatagramSocket udpSocket;
+    private DatagramSocket udpSocket; //сюда всё приходит
     private InetAddress serverAdress;
     private int port;
-    private String defaultFilename;
-    private boolean isWorking;
+    private boolean isWorking; //флаг работы
     private String login = "";
     private String password = "";
     private int userId;
-//    private HashSet<String> user_logins = new HashSet<>();
-//    private DataBaseManager dataBaseManager;
-//    private Tunnel tunnel;
+
 
     public Client(String serverAdress, int port) throws IOException {
         isWorking = true;
-//        dataBaseManager = new DataBaseManager();
         this.serverAdress = InetAddress.getByName(serverAdress);
         this.port = port;
         udpSocket = new DatagramSocket();
@@ -42,13 +38,12 @@ public class Client {
         System.out.println(s);
         DataBaseManager dataBaseManager = null;
         try {
-            dataBaseManager = new DataBaseManager("mydb", 5433);
+            dataBaseManager = new DataBaseManager("mydb", 5432);
         } catch (SQLException e){
             System.out.println("Cant load user list");
             System.exit(1);
         }
         while (!isLogin) {
-
             while (!(s.equals("register")) && (!s.equals("sing in"))) {
                 if (!s.equals(" "))
                     System.out.println("No such command");
@@ -65,7 +60,6 @@ public class Client {
                     String email = in.nextLine().trim();
                     password = DataBaseManager.getRandomPassword(4);
                     System.out.println("Your password: " + password);
-                    password = DataBaseManager.getMD5(password);
                     try{
                         EmailManager.sendEmail(email, "Registration", EmailManager.getPassMessage(login, password));
                     } catch (AddressException e){
@@ -73,12 +67,12 @@ public class Client {
                     }
                     if (dataBaseManager.registerUser(login, email, password)) {
                         System.out.println("Successful registration");
-                        System.out.println("Your password: " + password);
                         isLogin = true;
                         userId = dataBaseManager.getUserID(login);
                     } else {
                         System.out.println("Registration failed. User already exist");
                     }
+                    password = DataBaseManager.getMD5(password);
                     break;
 
                 case "sing in":
@@ -212,8 +206,15 @@ public class Client {
         }
     }
 
+    private static String getIP(){
+        String ip = "127.0.0.1";
+        System.out.println("Type IP: ");
+        Scanner in = new Scanner(System.in);
+        return in.nextLine();
+    }
+
     public static void main(String[] args) throws IOException {
-        Client sender = new Client("192.168.31.182",PORT);
+        Client sender = new Client(getIP(),PORT);
 
         byte[] b = new byte[32600];
 

@@ -38,7 +38,7 @@ public class DataBaseManager {
 
                 connection = DriverManager
                         .getConnection("jdbc:postgresql://localhost:" + lPort + "/" + dbName,
-                                user, "");
+                                "postgres", "000");
                 this.stmt = connection.createStatement();
                 System.out.println("Database connected!");
             } catch (NullPointerException ex) {
@@ -86,7 +86,7 @@ public class DataBaseManager {
      * @return
      */
     public ArrayQueue<Song> getSongs() {
-        ArrayQueue<Song> songs = new ArrayQueue<Song>(10);
+        ArrayQueue<Song> songs = new ArrayQueue<>(10);
         try {
 
             ResultSet rs = stmt.executeQuery("SELECT * FROM songs");

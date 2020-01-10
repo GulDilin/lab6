@@ -13,7 +13,6 @@ import java.nio.channels.DatagramChannel;
 public class ResponseThread extends Thread {
 
     private final InetSocketAddress clientAddress;
-    //    private WindowsArrayList windowsArrayList;
     private CollectionSongs songs;
     private ByteBuffer buffer;
     private DatagramChannel channel;
@@ -33,7 +32,6 @@ public class ResponseThread extends Thread {
                           CommandParser parser,
                           CollectionSongs songs) {
         super();
-//        this.windowsArrayList = windowsArrayList;
         this.channel = channel;
         this.clientAddress = clientAddress;
         this.buffer = buffer;

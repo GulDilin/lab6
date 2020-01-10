@@ -21,7 +21,7 @@ public class Server {
     public Server(int port) throws IOException, SQLException {
         this.host = InetAddress.getLocalHost();
         this.channel = DatagramChannel.open().bind(new InetSocketAddress(host, port));
-        dataBaseManager = new DataBaseManager("mydb", 5433);
+        dataBaseManager = new DataBaseManager("mydb", 5432);
         songs = new CollectionSongs(dataBaseManager);
         SET_VALUES = new String[]{"save", "import", "info", "add", "load",
                 "help", "show", "remove", "remove_lower", "start", "exit", "clear", "test"};

@@ -51,8 +51,4 @@ public class EmailManager {
                 "\tYour password: " + password;
         return message;
     }
-
-    public static void main(String[] args) throws AddressException {
-        sendEmail("zhenyagurin@gmail.com", "Test", "Test");
-    }
 }
